@@ -3,17 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="PDF Editor"
-        Width="1440"
-        Height="900"
-        MinWidth="980"
-        MinHeight="640"
-        WindowStartupLocation="CenterScreen"
+        Width="1200"
+        Height="780"
+        MinWidth="900"
+        MinHeight="560"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize"
+        WindowState="Normal"
+        WindowStartupLocation="Manual"
+        ShowInTaskbar="True"
         Background="{StaticResource WindowBackgroundBrush}"
         Loaded="Window_Loaded">
 
     <DockPanel LastChildFill="True">
-
-        <!-- MENU PRINCIPAL -->
         <Menu DockPanel.Dock="Top"
               Background="#FFFFFF"
               BorderBrush="#E5E7EB"
@@ -28,7 +30,6 @@
             </MenuItem>
         </Menu>
 
-        <!-- CABEÇALHO / AÇÕES -->
         <Border DockPanel.Dock="Top"
                 Background="#FFFFFF"
                 BorderBrush="#E5E7EB"
@@ -76,14 +77,12 @@
             </Grid>
         </Border>
 
-        <!-- ÁREA DE TRABALHO -->
         <Grid Margin="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
 
-            <!-- VISUALIZADOR CONTÍNUO -->
             <Border Grid.Column="0"
                     Background="#D9DDE3"
                     CornerRadius="6"
@@ -122,7 +121,6 @@
                 </Grid>
             </Border>
 
-            <!-- PAINEL DE INFORMAÇÕES -->
             <Border Grid.Column="1"
                     Margin="14,0,0,0"
                     Padding="18"
@@ -135,59 +133,48 @@
                                FontSize="16"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextBrush}" />
-
                     <TextBlock Text="Estado do scanner"
                                Margin="0,22,0,5"
                                FontSize="12"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource MutedBrush}" />
-
                     <TextBlock x:Name="ScannerStatusText"
                                Text="Aguardando documento"
                                FontSize="14"
                                Foreground="{StaticResource TextBrush}"
                                TextWrapping="Wrap" />
-
                     <Separator Margin="0,18,0,18"
                                Background="#E5E7EB" />
-
                     <TextBlock Text="Texto extraído"
                                FontSize="14"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextBrush}" />
-
                     <TextBlock x:Name="WordCountText"
                                Text="—"
                                Margin="0,8,0,0"
                                FontSize="25"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextBrush}" />
-
                     <TextBlock Text="palavras identificadas pelo scanner"
                                FontSize="11"
                                Foreground="{StaticResource MutedBrush}"
                                TextWrapping="Wrap" />
-
                     <TextBlock x:Name="PageCountText"
                                Text="Páginas analisadas: —"
                                Margin="0,18,0,0"
                                FontSize="12"
                                Foreground="{StaticResource TextBrush}" />
-
                     <Separator Margin="0,18,0,18"
                                Background="#E5E7EB" />
-
                     <TextBlock Text="Próxima etapa"
                                FontSize="14"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextBrush}" />
-
                     <TextBlock Text="Classificar os campos editáveis e destacar suas ocorrências diretamente sobre as páginas do documento."
                                Margin="0,8,0,0"
                                FontSize="12"
                                Foreground="{StaticResource MutedBrush}"
                                TextWrapping="Wrap" />
-
                     <TextBlock Text="Nota: palavras extraídas ainda não são necessariamente campos editáveis."
                                Margin="0,14,0,0"
                                FontSize="11"
@@ -197,7 +184,6 @@
             </Border>
         </Grid>
 
-        <!-- BARRA DE STATUS -->
         <Border DockPanel.Dock="Bottom"
                 Background="#FFFFFF"
                 BorderBrush="#E5E7EB"
