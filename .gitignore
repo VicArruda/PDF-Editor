@@ -1,0 +1,18 @@
+
+# Build
+bin/
+obj/
+publish/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Temporary files
+*.tmp
+*.log
+
+# Operating system
+Thumbs.db
+.DS_Store

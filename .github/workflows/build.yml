@@ -1,0 +1,48 @@
+
+name: Build PDF Editor
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+
+      # 01. Baixar o repositório
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 02. Configurar .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      # 03. Restaurar dependências
+      - name: Restore dependencies
+        run: dotnet restore src/PdfEditor/PdfEditor.csproj
+
+      # 04. Compilar e publicar
+      - name: Publish Windows executable
+        run: >
+          dotnet publish src/PdfEditor/PdfEditor.csproj
+          -c Release
+          -r win-x64
+          --self-contained true
+          -o ./publish
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+
+      # 05. Disponibilizar executável
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDF-Editor-Windows
+          path: publish/PDF_Editor.exe
+          if-no-files-found: error
