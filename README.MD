@@ -1,7 +1,6 @@
-
 # PDF Editor
 
-Aplicativo C# para identificação e futura edição de informações em documentos PDF.
+Aplicativo desktop em C# para identificar e futuramente editar informações em documentos PDF.
 
 ## Objetivo
 
@@ -10,34 +9,43 @@ Localizar textos específicos em documentos PDF, identificar todas as suas ocorr
 ## Tecnologias
 
 - C#
-- .NET 10
-- PdfPig
+- .NET 10 for Windows
+- WPF
+- WebView2 (visualização contínua de PDF)
+- PdfPig (extração de texto e coordenadas)
 - GitHub Actions
 
 ## Estrutura
 
 - Models: modelos de dados.
 - Services: serviços de processamento.
-- Program.cs: inicialização da aplicação.
+- App.xaml: inicialização e recursos da interface.
+- MainWindow.xaml: interface principal.
+- MainWindow.xaml.cs: abertura e gerenciamento do documento.
 
-## Desenvolvimento
+## Etapa 0.2 — Interface desktop inicial
 
-### Scanner 0.1
+- Migração da aplicação Console para WPF.
+- Janela principal com menu Arquivo.
+- Abertura de documentos PDF pelo seletor de arquivos.
+- Visualização contínua do documento via WebView2.
+- Integração do scanner existente na abertura do arquivo.
+- Exibição de estatísticas básicas do texto extraído.
+- Botão Salvar reservado para a etapa de edição.
 
-- Leitura de documentos PDF.
-- Extração de palavras.
-- Identificação de páginas.
-- Captura de coordenadas.
-- Relatório no terminal.
+**Limitação atual:** o scanner extrai palavras e coordenadas, mas ainda não classifica campos editáveis. Os destaques amarelos e a edição direta serão implementados em etapas posteriores.
 
 ## Compilação
 
 O executável Windows é gerado pelo GitHub Actions.
 
+O Microsoft Edge WebView2 Runtime precisa estar disponível no Windows para a visualização integrada.
+
 ## Próximas etapas
 
-- Identificação de ocorrências.
-- Seleção individual de textos.
-- Substituição de conteúdo.
+- Identificação de campos editáveis.
+- Destaque visual das ocorrências no documento.
+- Seleção individual de ocorrências.
+- Edição e substituição do conteúdo.
 - Preservação da formatação.
-- Salvamento de novos documentos.
+- Salvamento do documento editado.

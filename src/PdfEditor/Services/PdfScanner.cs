@@ -1,4 +1,3 @@
-
 using PdfEditor.Models;
 using UglyToad.PdfPig;
 
@@ -27,42 +26,69 @@ public sealed class PdfScanner
             Path.GetFileName,
             StringComparer.OrdinalIgnoreCase))
         {
-            string fileName = Path.GetFileName(filePath);
+            occurrences.AddRange(ScanFile(filePath));
+        }
 
-            using PdfDocument document = PdfDocument.Open(filePath);
+        return occurrences;
+    }
 
-            foreach (var page in document.GetPages())
+    public IReadOnlyList<PdfOccurrence> ScanFile(string filePath)
+    {
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException(
+                "O documento PDF não foi encontrado.",
+                filePath
+            );
+        }
+
+        if (!string.Equals(
+            Path.GetExtension(filePath),
+            ".pdf",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException(
+                "O arquivo selecionado não possui a extensão .pdf.",
+                nameof(filePath)
+            );
+        }
+
+        string fileName = Path.GetFileName(filePath);
+        var occurrences = new List<PdfOccurrence>();
+
+        using PdfDocument document = PdfDocument.Open(filePath);
+
+        foreach (var page in document.GetPages())
+        {
+            var words = page.GetWords();
+
+            foreach (var word in words)
             {
-                var words = page.GetWords();
-
-                foreach (var word in words)
+                if (string.IsNullOrWhiteSpace(word.Text))
                 {
-                    if (string.IsNullOrWhiteSpace(word.Text))
-                    {
-                        continue;
-                    }
-
-                    var bounds = word.BoundingBox;
-
-                    occurrences.Add(new PdfOccurrence
-                    {
-                        FileName = fileName,
-                        FilePath = filePath,
-
-                        PageNumber = page.Number,
-
-                        Text = word.Text,
-
-                        Left = (double)bounds.Left,
-                        Bottom = (double)bounds.Bottom,
-
-                        Width = (double)bounds.Width,
-                        Height = (double)bounds.Height,
-
-                        PageWidth = (double)page.Width,
-                        PageHeight = (double)page.Height
-                    });
+                    continue;
                 }
+
+                var bounds = word.BoundingBox;
+
+                occurrences.Add(new PdfOccurrence
+                {
+                    FileName = fileName,
+                    FilePath = filePath,
+
+                    PageNumber = page.Number,
+
+                    Text = word.Text,
+
+                    Left = (double)bounds.Left,
+                    Bottom = (double)bounds.Bottom,
+
+                    Width = (double)bounds.Width,
+                    Height = (double)bounds.Height,
+
+                    PageWidth = (double)page.Width,
+                    PageHeight = (double)page.Height
+                });
             }
         }
 

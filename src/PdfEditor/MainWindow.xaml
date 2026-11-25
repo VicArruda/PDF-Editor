@@ -1,0 +1,212 @@
+<Window x:Class="PdfEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="PDF Editor"
+        Width="1440"
+        Height="900"
+        MinWidth="980"
+        MinHeight="640"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource WindowBackgroundBrush}"
+        Loaded="Window_Loaded">
+
+    <DockPanel LastChildFill="True">
+
+        <!-- MENU PRINCIPAL -->
+        <Menu DockPanel.Dock="Top"
+              Background="#FFFFFF"
+              BorderBrush="#E5E7EB"
+              BorderThickness="0,0,0,1">
+            <MenuItem Header="_Arquivo">
+                <MenuItem Header="_Abrir PDF..."
+                          InputGestureText="Ctrl+O"
+                          Click="OpenPdf_Click" />
+                <Separator />
+                <MenuItem Header="_Sair"
+                          Click="Exit_Click" />
+            </MenuItem>
+        </Menu>
+
+        <!-- CABEÇALHO / AÇÕES -->
+        <Border DockPanel.Dock="Top"
+                Background="#FFFFFF"
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,0,0,1"
+                Padding="18,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="PDF Editor"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+                    <TextBlock x:Name="DocumentNameText"
+                               Text="Nenhum documento aberto"
+                               Margin="0,3,0,0"
+                               FontSize="12"
+                               Foreground="{StaticResource MutedBrush}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Button Content="Abrir PDF"
+                            Click="OpenPdf_Click"
+                            Padding="18,9"
+                            Margin="0,0,10,0"
+                            Background="#FFFFFF"
+                            BorderBrush="#D1D5DB"
+                            Foreground="{StaticResource TextBrush}"
+                            Cursor="Hand" />
+                    <Button x:Name="SaveButton"
+                            Content="Salvar"
+                            IsEnabled="False"
+                            Padding="22,9"
+                            Background="{StaticResource PrimaryBrush}"
+                            BorderBrush="{StaticResource PrimaryBrush}"
+                            Foreground="#FFFFFF"
+                            FontWeight="SemiBold"
+                            ToolTip="A edição e o salvamento serão habilitados em uma próxima etapa." />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ÁREA DE TRABALHO -->
+        <Grid Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+
+            <!-- VISUALIZADOR CONTÍNUO -->
+            <Border Grid.Column="0"
+                    Background="#D9DDE3"
+                    CornerRadius="6"
+                    BorderBrush="#D1D5DB"
+                    BorderThickness="1"
+                    ClipToBounds="True">
+                <Grid>
+                    <wv2:WebView2 x:Name="PdfViewer"
+                                  Visibility="Collapsed" />
+
+                    <StackPanel x:Name="EmptyState"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                MaxWidth="420">
+                        <TextBlock Text="Abra um documento PDF"
+                                   FontSize="23"
+                                   FontWeight="SemiBold"
+                                   Foreground="#374151"
+                                   TextAlignment="Center" />
+                        <TextBlock Text="Use Arquivo → Abrir PDF ou o botão no cabeçalho para começar."
+                                   Margin="0,12,0,0"
+                                   FontSize="14"
+                                   Foreground="#6B7280"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <Button Content="Selecionar arquivo"
+                                Click="OpenPdf_Click"
+                                Margin="0,22,0,0"
+                                Padding="20,10"
+                                HorizontalAlignment="Center"
+                                Background="{StaticResource PrimaryBrush}"
+                                BorderBrush="{StaticResource PrimaryBrush}"
+                                Foreground="#FFFFFF"
+                                Cursor="Hand" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- PAINEL DE INFORMAÇÕES -->
+            <Border Grid.Column="1"
+                    Margin="14,0,0,0"
+                    Padding="18"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                <StackPanel>
+                    <TextBlock Text="Análise do documento"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+
+                    <TextBlock Text="Estado do scanner"
+                               Margin="0,22,0,5"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource MutedBrush}" />
+
+                    <TextBlock x:Name="ScannerStatusText"
+                               Text="Aguardando documento"
+                               FontSize="14"
+                               Foreground="{StaticResource TextBrush}"
+                               TextWrapping="Wrap" />
+
+                    <Separator Margin="0,18,0,18"
+                               Background="#E5E7EB" />
+
+                    <TextBlock Text="Texto extraído"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+
+                    <TextBlock x:Name="WordCountText"
+                               Text="—"
+                               Margin="0,8,0,0"
+                               FontSize="25"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+
+                    <TextBlock Text="palavras identificadas pelo scanner"
+                               FontSize="11"
+                               Foreground="{StaticResource MutedBrush}"
+                               TextWrapping="Wrap" />
+
+                    <TextBlock x:Name="PageCountText"
+                               Text="Páginas analisadas: —"
+                               Margin="0,18,0,0"
+                               FontSize="12"
+                               Foreground="{StaticResource TextBrush}" />
+
+                    <Separator Margin="0,18,0,18"
+                               Background="#E5E7EB" />
+
+                    <TextBlock Text="Próxima etapa"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}" />
+
+                    <TextBlock Text="Classificar os campos editáveis e destacar suas ocorrências diretamente sobre as páginas do documento."
+                               Margin="0,8,0,0"
+                               FontSize="12"
+                               Foreground="{StaticResource MutedBrush}"
+                               TextWrapping="Wrap" />
+
+                    <TextBlock Text="Nota: palavras extraídas ainda não são necessariamente campos editáveis."
+                               Margin="0,14,0,0"
+                               FontSize="11"
+                               Foreground="#92400E"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- BARRA DE STATUS -->
+        <Border DockPanel.Dock="Bottom"
+                Background="#FFFFFF"
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,1,0,0"
+                Padding="14,7">
+            <TextBlock x:Name="StatusText"
+                       Text="Pronto"
+                       FontSize="11"
+                       Foreground="{StaticResource MutedBrush}" />
+        </Border>
+    </DockPanel>
+</Window>
