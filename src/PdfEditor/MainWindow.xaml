@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="PDF Editor"
-        Width="1200"
-        Height="780"
+        Width="1180"
+        Height="740"
         MinWidth="900"
         MinHeight="560"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize"
         WindowState="Normal"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"
         Background="{StaticResource WindowBackgroundBrush}"
         Loaded="Window_Loaded">
@@ -40,7 +40,6 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="PDF Editor"
                                FontSize="20"
@@ -52,7 +51,6 @@
                                FontSize="12"
                                Foreground="{StaticResource MutedBrush}" />
                 </StackPanel>
-
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             VerticalAlignment="Center">
@@ -82,7 +80,6 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
-
             <Border Grid.Column="0"
                     Background="#D9DDE3"
                     CornerRadius="6"
@@ -92,7 +89,6 @@
                 <Grid>
                     <wv2:WebView2 x:Name="PdfViewer"
                                   Visibility="Collapsed" />
-
                     <StackPanel x:Name="EmptyState"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -120,7 +116,6 @@
                     </StackPanel>
                 </Grid>
             </Border>
-
             <Border Grid.Column="1"
                     Margin="14,0,0,0"
                     Padding="18"
