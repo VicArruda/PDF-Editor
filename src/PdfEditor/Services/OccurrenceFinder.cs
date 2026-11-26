@@ -6,9 +6,8 @@ namespace PdfEditor.Services;
 
 public sealed class OccurrenceFinder
 {
-    // Nesta primeira etapa, a busca é intencionalmente restrita ao campo
-    // Referência para validar a regra com documentos reais antes de ampliar
-    // a classificação para outros campos.
+    // A busca inicial fica restrita a Referência para validar o comportamento
+    // com documentos reais antes de ampliar a classificação para outros campos.
     private const string ReferenceLabel = "referencia";
 
     public IReadOnlyList<PdfFieldOccurrence> FindReferenceOccurrences(
@@ -30,12 +29,8 @@ public sealed class OccurrenceFinder
             foreach (PdfOccurrence label in pageWords.Where(
                 word => Normalize(word.Text) == ReferenceLabel))
             {
-                PdfOccurrence? value = FindValueBesideLabel(label, pageWords);
-
-                if (value is null)
-                {
-                    value = FindValueBelowLabel(label, pageWords);
-                }
+                PdfOccurrence? value = FindValueBesideLabel(label, pageWords)
+                    ?? FindValueBelowLabel(label, pageWords);
 
                 if (value is null)
                 {
@@ -73,6 +68,7 @@ public sealed class OccurrenceFinder
         return pageWords
             .Where(word =>
                 word != label &&
+                Normalize(word.Text).Length > 0 &&
                 word.Left >= label.Left + label.Width - 0.5 &&
                 HasSameLine(label, word))
             .Select(word => new
@@ -93,6 +89,7 @@ public sealed class OccurrenceFinder
         return pageWords
             .Where(word =>
                 word != label &&
+                Normalize(word.Text).Length > 0 &&
                 word.Bottom < label.Bottom &&
                 HorizontalOverlap(label, word) >= 0.25)
             .Select(word => new
