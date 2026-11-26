@@ -1,5 +1,6 @@
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
+using PdfEditor.Models;
 using PdfEditor.Services;
 using System.IO;
 using System.Windows;
@@ -10,6 +11,8 @@ namespace PdfEditor;
 public partial class MainWindow : Window
 {
     private readonly PdfScanner _scanner = new();
+    private readonly OccurrenceFinder _occurrenceFinder = new();
+
     private bool _webViewInitialized;
     private string? _currentFilePath;
 
@@ -79,6 +82,8 @@ public partial class MainWindow : Window
             StatusText.Text = "Abrindo documento...";
             ScannerStatusText.Text = "Analisando documento...";
             DocumentNameText.Text = Path.GetFileName(filePath);
+            FieldOccurrencesList.ItemsSource = null;
+            FieldCountText.Text = "Localizando referências...";
 
             if (!_webViewInitialized)
             {
@@ -92,34 +97,40 @@ public partial class MainWindow : Window
                 );
             }
 
-            // O visualizador integrado do WebView2 apresenta o PDF
-            // com rolagem contínua, sem converter as páginas em imagens.
             PdfViewer.Visibility = Visibility.Visible;
             EmptyState.Visibility = Visibility.Collapsed;
             PdfViewer.CoreWebView2.Navigate(new Uri(filePath).AbsoluteUri);
 
             _currentFilePath = filePath;
 
-            IReadOnlyList<PdfEditor.Models.PdfOccurrence> occurrences =
+            IReadOnlyList<PdfOccurrence> words =
                 await Task.Run(() => _scanner.ScanFile(filePath));
 
-            int pageCount = occurrences
+            IReadOnlyList<PdfFieldOccurrence> fields =
+                await Task.Run(() => _occurrenceFinder.FindReferenceOccurrences(words));
+
+            int pageCount = words
                 .Select(item => item.PageNumber)
                 .Distinct()
                 .Count();
 
-            WordCountText.Text = occurrences.Count.ToString("N0");
+            WordCountText.Text = words.Count.ToString("N0");
             PageCountText.Text = $"Páginas com texto analisado: {pageCount}";
             ScannerStatusText.Text = "Leitura concluída";
-            StatusText.Text = $"Documento aberto: {Path.GetFileName(filePath)}";
 
-            // O scanner atual extrai palavras e coordenadas.
-            // A classificação de campos editáveis será implementada
-            // separadamente, para evitar tratar todo texto como editável.
+            FieldOccurrencesList.ItemsSource = fields;
+            FieldCountText.Text = fields.Count == 1
+                ? "1 ocorrência localizada"
+                : $"{fields.Count} ocorrências localizadas";
+
+            StatusText.Text = fields.Count == 0
+                ? $"Documento aberto: {Path.GetFileName(filePath)} — nenhuma referência identificada."
+                : $"Documento aberto: {Path.GetFileName(filePath)} — {fields.Count} referência(s) identificada(s).";
         }
         catch (Exception ex)
         {
             ScannerStatusText.Text = "Falha na análise";
+            FieldCountText.Text = "Não foi possível localizar os campos.";
             StatusText.Text = "Não foi possível abrir ou analisar o documento.";
 
             MessageBox.Show(
